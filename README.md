@@ -1,2 +1,2 @@
-# gisblox-services-cli
-Command line tool for GISBlox Services
+# GISBlox Services CLI
+The official command line tool for GISBlox Services.
