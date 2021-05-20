@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GISBlox.Services.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "convert"
+    }
+  }
+}

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using GISBlox.Services.CLI.Commands;
 
 namespace GISBlox.Services.CLI
 {
@@ -12,22 +13,23 @@ namespace GISBlox.Services.CLI
    [VersionOptionFromMember("--version", MemberName = nameof(GetVersion))]
    [Subcommand(
         typeof(LoginCmd),
-        typeof(ListTicketCmd))]
-   class gbsCmd : gbsCmdBase
+        typeof(ConvertCmd)
+      )]
+   class Cmd : CmdBase
    {
-      public gbsCmd(IConsole console)
+      public Cmd(IConsole console)
       {
          _console = console;
       }
 
       protected override Task<int> OnExecute(CommandLineApplication app)
       {
-         // this shows help even if the --help option isn't specified
+         // this shows help even if the --help option isn't specified         
          app.ShowHelp();
          return Task.FromResult(0);
       }
 
       private static string GetVersion()
-          => typeof(gbsCmd).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+          => typeof(Cmd).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
    }
 }

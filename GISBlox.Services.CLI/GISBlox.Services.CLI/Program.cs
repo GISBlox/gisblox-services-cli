@@ -1,7 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using GISBlox.Services.SDK;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI
 {
@@ -9,6 +10,12 @@ namespace GISBlox.Services.CLI
    {
       private static async Task<int> Main(string[] args)
       {
+         var Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                //.AddJsonFile(AppDomain.CurrentDomain.BaseDirectory + "\\appsettings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
+
          var builder = new HostBuilder()
              .ConfigureServices((hostContext, services) =>
              {
@@ -17,7 +24,7 @@ namespace GISBlox.Services.CLI
 
          try
          {
-            return await builder.RunCommandLineApplicationAsync<gbsCmd>(args);
+            return await builder.RunCommandLineApplicationAsync<Cmd>(args);
          }
          catch (Exception ex)
          {
