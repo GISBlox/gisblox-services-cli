@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+   <PropertyGroup>
+      <OutputType>Exe</OutputType>
+      <TargetFramework>net5.0</TargetFramework>
+      <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+      <LangVersion>latest</LangVersion>
+      <AssemblyName>gbs</AssemblyName>
+      <PackageId>GISBlox.Services.CLI</PackageId>
+      <Authors>Bartels Online</Authors>
+      <Product>GISBlox.Services.CLI</Product>
+      <Description>Command line interface for GISBlox Services.</Description>
+      <Copyright>© Bartels Online. All rights reserved.</Copyright>
+      <PackageLicenseExpression>MIT</PackageLicenseExpression>
+      <PackageProjectUrl>https://github.com/GISBlox/gisblox-services-cli</PackageProjectUrl>
+      <RepositoryUrl>https://github.com/GISBlox/gisblox-services-cli</RepositoryUrl>
+      <RepositoryType>git</RepositoryType>
+      <PackageTags>GISBlox</PackageTags>
+   </PropertyGroup>
+
+</Project>
