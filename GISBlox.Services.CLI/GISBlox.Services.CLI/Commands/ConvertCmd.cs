@@ -8,10 +8,10 @@ using GISBlox.Services.SDK.Models;
 
 namespace GISBlox.Services.CLI.Commands
 {
-   [Command(Name = "convert", Description = "Converts WKT geometries into GeoJson")]
+   [Command(Name = "convert", Description = "Convert WKT geometries into GeoJson")]
    class ConvertCmd : CmdBase
    {
-      [Option(CommandOptionType.SingleValue, ShortName = "", LongName = "wkt", Description = "WKT geometry", ValueName = "wkt", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "w", LongName = "wkt", Description = "WKT geometry", ValueName = "wkt", ShowInHelpText = true)]
       public string Wkt { get; set; }
 
       public ConvertCmd(IConsole console)

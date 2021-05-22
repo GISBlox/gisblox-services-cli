@@ -12,8 +12,9 @@ namespace GISBlox.Services.CLI
    [Command(Name = "gbs", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
    [VersionOptionFromMember("--version", MemberName = nameof(GetVersion))]
    [Subcommand(
-        typeof(LoginCmd),
-        typeof(ConvertCmd)
+         typeof(LoginCmd),
+         typeof(LogoutCmd),
+         typeof(ConvertCmd)
       )]
    class Cmd : CmdBase
    {

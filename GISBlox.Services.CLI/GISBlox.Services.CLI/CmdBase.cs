@@ -66,9 +66,24 @@ namespace GISBlox.Services.CLI
             }
             return _userProfile;
          }
-      }     
+      }
 
-      protected String SecureStringToString(SecureString value)
+      protected bool UserProfileExists()
+      {
+         string userProfile = $"{ProfileFolder}default";
+         return File.Exists(userProfile);
+      }
+
+      protected void DeleteUserProfile()
+      {
+         string userProfile = $"{ProfileFolder}default";
+         if (File.Exists(userProfile))
+         {
+            File.Delete(userProfile);            
+         }
+      }
+
+      protected string SecureStringToString(SecureString value)
       {
          IntPtr valuePtr = IntPtr.Zero;
          try
@@ -163,7 +178,23 @@ namespace GISBlox.Services.CLI
 
       protected void OnException(Exception ex)
       {
-         OutputError(ex.Message);        
+         if (ex is ClientApiException)
+         {
+            ClientApiException apiException = (ClientApiException)ex;
+            if (apiException.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+               //DeleteUserProfile();
+               OutputToConsole("Unauthorized - check your subscription details at https://account.gisblox.com", ConsoleColor.Red);
+            }
+            else
+            {
+               OutputError(apiException.StatusCode.ToString());
+            }
+         }
+         else
+         {
+            OutputError(ex.Message);
+         }
       }
 
       protected void OutputJson(string data)
@@ -176,11 +207,11 @@ namespace GISBlox.Services.CLI
          OutputToConsole(data);         
       }      
 
-      protected void OutputToConsole(string data)
+      protected void OutputToConsole(string data, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black)
       {
-         _console.BackgroundColor = ConsoleColor.Black;
-         _console.ForegroundColor = ConsoleColor.White;
-         _console.Out.Write(data);
+         _console.BackgroundColor = backgroundColor;
+         _console.ForegroundColor = foregroundColor;
+         _console.Out.WriteLine(data);         
          _console.ResetColor();
       }
 
