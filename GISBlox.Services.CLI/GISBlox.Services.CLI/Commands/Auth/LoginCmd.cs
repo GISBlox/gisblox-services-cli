@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using McMaster.Extensions.CommandLineUtils;
+using System;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using McMaster.Extensions.CommandLineUtils;
 
-namespace GISBlox.Services.CLI.Commands
+namespace GISBlox.Services.CLI.Commands.Auth
 {
    [Command(Name = "login", Description = "Authenticate with a GISBlox Services host.")]
    class LoginCmd : CmdBase
@@ -39,21 +35,16 @@ namespace GISBlox.Services.CLI.Commands
                }
 
                // Create a user profile with the encrypted service key
-               var userProfile = new UserProfile()
-               {
-                  ServiceKey = Encrypt(Token)
-               };
+               var newProfile = new UserProfile() { ServiceKey = Encrypt(Token) };               
+               await SaveUserProfile(newProfile);
 
-               // Save to disc
-               await SaveUserProfile(userProfile);
-
-               // Add subscription info to user profile
+               // Get subscription info and add it to the user profile
                var result = await GISBloxClient.Info.GetSubscriptions();
                var locationServicesSub = result.Where(s => s.Code.StartsWith("GBLS-")).SingleOrDefault();
                if (locationServicesSub != null)
                {
-                  userProfile.SubscriptionExpirationDate = locationServicesSub.ExpirationDate;
-                  await SaveUserProfile(userProfile);
+                  UserProfile.SubscriptionExpirationDate = locationServicesSub.ExpirationDate;
+                  await SaveUserProfile();
 
                   OutputToConsole("Successfully logged in.", ConsoleColor.Green);                  
                }
@@ -65,18 +56,6 @@ namespace GISBlox.Services.CLI.Commands
             OnException(ex);
             return 1;
          }
-      }
-      
-      protected async Task SaveUserProfile(UserProfile profile)
-      {
-         // Create the user profile folder (if not exists)
-         if (!Directory.Exists(ProfileFolder))
-         {
-            Directory.CreateDirectory(ProfileFolder);
-         }
-
-         // Serialize the user profile to disc
-         await File.WriteAllTextAsync($"{ProfileFolder}default", JsonSerializer.Serialize(profile, typeof(UserProfile)), UTF8Encoding.UTF8);
-      }      
+      }    
    }
 }

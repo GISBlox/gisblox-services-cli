@@ -6,6 +6,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using GISBlox.Services.CLI.Commands;
+using GISBlox.Services.CLI.Commands.Auth;
+using GISBlox.Services.CLI.Commands.Convert;
+//using GISBlox.Services.CLI.Commands.Project;
 
 namespace GISBlox.Services.CLI
 {
@@ -14,6 +17,7 @@ namespace GISBlox.Services.CLI
    [Subcommand(
          typeof(LoginCmd),
          typeof(LogoutCmd),
+         typeof(StatusCmd),
          typeof(ConvertCmd)
       )]
    class Cmd : CmdBase

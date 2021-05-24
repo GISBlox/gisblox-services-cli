@@ -48,13 +48,22 @@ namespace GISBlox.Services.CLI
          }
       }
 
+      protected string ProfileFullName
+      { 
+         get
+         {
+            return $"{ProfileFolder}default";
+         }
+      }
+
+
       protected UserProfile UserProfile
       {
          get
          {
             if (_userProfile == null)
             {
-               var text = File.ReadAllText($"{ProfileFolder}default");
+               var text = File.ReadAllText(ProfileFullName);
                if (!string.IsNullOrEmpty(text))
                {
                   _userProfile = JsonSerializer.Deserialize<UserProfile>(text);
@@ -69,18 +78,36 @@ namespace GISBlox.Services.CLI
       }
 
       protected bool UserProfileExists()
+      {         
+         return File.Exists(ProfileFullName);
+      }
+
+      protected void CreateUserProfileFolder()
       {
-         string userProfile = $"{ProfileFolder}default";
-         return File.Exists(userProfile);
+         if (!Directory.Exists(ProfileFolder))
+         {
+            Directory.CreateDirectory(ProfileFolder);
+         }
       }
 
       protected void DeleteUserProfile()
-      {
-         string userProfile = $"{ProfileFolder}default";
-         if (File.Exists(userProfile))
+      {         
+         if (File.Exists(ProfileFullName))
          {
-            File.Delete(userProfile);            
+            File.Delete(ProfileFullName);            
          }
+      }
+
+      protected async Task SaveUserProfile()
+      {
+         CreateUserProfileFolder();
+         await File.WriteAllTextAsync(ProfileFullName, JsonSerializer.Serialize(_userProfile, typeof(UserProfile)), UTF8Encoding.UTF8);
+      }
+
+      protected async Task SaveUserProfile(UserProfile profile)
+      {
+         CreateUserProfileFolder();
+         await File.WriteAllTextAsync(ProfileFullName, JsonSerializer.Serialize(profile, typeof(UserProfile)), UTF8Encoding.UTF8);
       }
 
       protected string SecureStringToString(SecureString value)
@@ -183,7 +210,8 @@ namespace GISBlox.Services.CLI
             ClientApiException apiException = (ClientApiException)ex;
             if (apiException.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-               //DeleteUserProfile();
+               // Remove stale information
+               DeleteUserProfile();
                OutputToConsole("Unauthorized - check your subscription details at https://account.gisblox.com", ConsoleColor.Red);
             }
             else

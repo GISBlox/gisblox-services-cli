@@ -2,7 +2,7 @@
   "profiles": {
     "GISBlox.Services.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "convert"
+      "commandLineArgs": "login --with-token \"CB7E92BD91B3512F52995E6018FE74DB73975B9F\""
     }
   }
 }

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GISBlox.Services.SDK.Models;
 
-namespace GISBlox.Services.CLI.Commands
+namespace GISBlox.Services.CLI.Commands.Convert
 {
    [Command(Name = "convert", Description = "Convert WKT geometries into GeoJson")]
    class ConvertCmd : CmdBase
@@ -22,17 +22,24 @@ namespace GISBlox.Services.CLI.Commands
       {
          try
          {
-            if (string.IsNullOrEmpty(Wkt))
+            if (!UserProfileExists())
             {
-               Wkt = Prompt.GetString("WKT:", Wkt);
+               OutputToConsole("Not logged in!", ConsoleColor.Yellow);
+               return 1;               
             }
+            else
+            {
+               if (string.IsNullOrEmpty(Wkt))
+               {
+                  Wkt = Prompt.GetString("WKT:", Wkt);
+               }
+               OutputToConsole($"Converting WKT '{ Wkt }' to GeoJson...");
 
-            var geoJson = await GISBloxClient.Conversion.ToGeoJson(new WKT(Wkt), false);
+               var geoJson = await GISBloxClient.Conversion.ToGeoJson(new WKT(Wkt), false);
 
-
-            OutputJson(geoJson);
-
-            return 0;
+               OutputJson(geoJson);
+               return 0;
+            }            
          }
          catch (Exception ex)
          {
