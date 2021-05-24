@@ -8,11 +8,14 @@ using GISBlox.Services.SDK.Models;
 
 namespace GISBlox.Services.CLI.Commands.Convert
 {
-   [Command(Name = "convert", Description = "Convert WKT geometries into GeoJson")]
+   [Command(Name = "convert", Description = "Convert WKT geometries into GeoJson")]   
    class ConvertCmd : CmdBase
    {
-      [Option(CommandOptionType.SingleValue, ShortName = "w", LongName = "wkt", Description = "WKT geometry", ValueName = "wkt", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "w", LongName = "wkt", Description = "WKT geometry", ValueName = "wkt", ShowInHelpText = true)]      
       public string Wkt { get; set; }
+
+      [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "geojson", Description = "GeoJson", ValueName = "geojson", ShowInHelpText = true)]
+      public string GeoJson { get; set; }
 
       public ConvertCmd(IConsole console)
       {
@@ -29,16 +32,26 @@ namespace GISBlox.Services.CLI.Commands.Convert
             }
             else
             {
-               if (string.IsNullOrEmpty(Wkt))
+               if (!string.IsNullOrEmpty(Wkt) && string.IsNullOrEmpty(GeoJson))
                {
-                  Wkt = Prompt.GetString("WKT:", Wkt);
+                  OutputToConsole($"Converting WKT '{ Wkt }' to GeoJson...");
+
+                  var geoJson = await GISBloxClient.Conversion.ToGeoJson(new WKT(Wkt), false);
+                  OutputJson(geoJson);
+                  return 0;
                }
-               OutputToConsole($"Converting WKT '{ Wkt }' to GeoJson...");
+               else if (string.IsNullOrEmpty(Wkt) && !string.IsNullOrEmpty(GeoJson))
+               {
+                  OutputToConsole($"Converting GeoJson to WKT...");
 
-               var geoJson = await GISBloxClient.Conversion.ToGeoJson(new WKT(Wkt), false);
-
-               OutputJson(geoJson);
-               return 0;
+                  Output("Not implemented.");
+                  return 0;
+               }
+               else
+               {
+                  OutputToConsole("Invalid combination of command options!", ConsoleColor.Red);
+                  return 1;
+               }
             }            
          }
          catch (Exception ex)

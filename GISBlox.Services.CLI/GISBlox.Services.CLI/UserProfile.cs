@@ -8,8 +8,6 @@ namespace GISBlox.Services.CLI
 {
    class UserProfile
    {
-      public string ServiceKey { get; set; }
-
-      public DateTime SubscriptionExpirationDate { get; set; }      
+      public string ServiceKey { get; set; }      
    }
 }

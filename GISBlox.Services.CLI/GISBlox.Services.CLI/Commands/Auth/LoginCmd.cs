@@ -38,14 +38,10 @@ namespace GISBlox.Services.CLI.Commands.Auth
                var newProfile = new UserProfile() { ServiceKey = Encrypt(Token) };               
                await SaveUserProfile(newProfile);
 
-               // Get subscription info and add it to the user profile
-               var result = await GISBloxClient.Info.GetSubscriptions();
-               var locationServicesSub = result.Where(s => s.Code.StartsWith("GBLS-")).SingleOrDefault();
-               if (locationServicesSub != null)
-               {
-                  UserProfile.SubscriptionExpirationDate = locationServicesSub.ExpirationDate;
-                  await SaveUserProfile();
-
+               // Make an API call to authorize user
+               var result = await GISBloxClient.Info.GetSubscriptions();               
+               if (result != null)
+               {                
                   OutputToConsole("Successfully logged in.", ConsoleColor.Green);                  
                }
             }

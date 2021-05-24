@@ -19,10 +19,35 @@ namespace GISBlox.Services.CLI.Commands.Auth
       {
          try
          {
-            OutputToConsole("Checking status...");
+            if (!UserProfileExists())
+            {
+               OutputToConsole("Not logged in!", ConsoleColor.Yellow);
+               return 1;
+            }
+            else
+            {
+               OutputToConsole("Checking status...");
 
-            
-            return await Task.FromResult(0);
+               var result = await GISBloxClient.Info.GetSubscriptions();
+               var locationServicesSub = result.Where(s => s.Code.StartsWith("GBLS-")).SingleOrDefault();
+               if (locationServicesSub != null)
+               {
+                  OutputToConsole("Successfully authenticated.", ConsoleColor.Green);
+
+                  Output("Subscription details:");
+                  Output($" - Name: { locationServicesSub.Name }");
+                  Output($" - Code: { locationServicesSub.Code }");
+                  Output($" - Description: { locationServicesSub.Description }");
+                  Output($" - Registration date: { locationServicesSub.RegisterDate }");
+                  Output($" - Expiration date: { locationServicesSub.ExpirationDate }");
+                  Output($" - Expired: { locationServicesSub.Expired }");                  
+                  return 0;
+               }
+               else
+               {
+                  return 1;
+               }
+            }
          }
          catch (Exception ex)
          {

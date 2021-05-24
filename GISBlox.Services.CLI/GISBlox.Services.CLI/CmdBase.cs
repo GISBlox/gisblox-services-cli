@@ -56,7 +56,6 @@ namespace GISBlox.Services.CLI
          }
       }
 
-
       protected UserProfile UserProfile
       {
          get
@@ -97,17 +96,11 @@ namespace GISBlox.Services.CLI
             File.Delete(ProfileFullName);            
          }
       }
-
-      protected async Task SaveUserProfile()
-      {
-         CreateUserProfileFolder();
-         await File.WriteAllTextAsync(ProfileFullName, JsonSerializer.Serialize(_userProfile, typeof(UserProfile)), UTF8Encoding.UTF8);
-      }
-
+     
       protected async Task SaveUserProfile(UserProfile profile)
       {
          CreateUserProfileFolder();
-         await File.WriteAllTextAsync(ProfileFullName, JsonSerializer.Serialize(profile, typeof(UserProfile)), UTF8Encoding.UTF8);
+         await File.WriteAllTextAsync(ProfileFullName, JsonSerializer.Serialize(profile, typeof(UserProfile)), UTF8Encoding.UTF8);         
       }
 
       protected string SecureStringToString(SecureString value)
