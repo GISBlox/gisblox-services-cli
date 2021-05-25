@@ -1,4 +1,5 @@
 ﻿using GISBlox.Services.SDK;
+using GISBlox.Services.SDK.Models;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using System;
@@ -242,6 +243,39 @@ namespace GISBlox.Services.CLI
          _console.ForegroundColor = ConsoleColor.White;
          _console.Error.WriteLine(message);
          _console.ResetColor();
+      }
+
+      /// <summary>
+      /// Converts a string into a Coordinate type.
+      /// </summary>
+      /// <param name="coordinate">A string containing a coordinate pair in 'x,y' format.</param>
+      /// <param name="latLon">Set to True if the coordinate pair is passed in lat/lon order, False if in lon/lat order.</param>
+      /// <returns>A Coordinate type with the converted coordinate string.</returns>
+      protected Coordinate CoordinateFromString(string coordinate, bool latLon = true)
+      {         
+         double x, y;
+         Coordinate c = new();
+         
+         if (coordinate == null || coordinate.Length == 0)
+            throw new ArgumentNullException("coordinate");
+         string[] splitCoordinate = coordinate.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+         if (splitCoordinate.Length != 2)
+            throw new ArgumentException("Invalid coordinate string.");
+         if (!Double.TryParse(splitCoordinate[0].Replace(".", ","), out x))
+            throw new ArgumentException("Invalid coordinate string: the X component (" + splitCoordinate[0].Replace(".", ",") + ") is not of type 'double'.");
+         if (!Double.TryParse(splitCoordinate[1].Replace(".", ","), out y))
+            throw new ArgumentException("Invalid coordinate string: the Y component (" + splitCoordinate[1].Replace(".", ",") + ") is not of type 'double'.");
+         if (latLon)
+         {
+            c.Lat = x;
+            c.Lon = y;            
+         }
+         else
+         {
+            c.Lat = y;
+            c.Lon = x;            
+         }
+         return c;
       }
    }
 }

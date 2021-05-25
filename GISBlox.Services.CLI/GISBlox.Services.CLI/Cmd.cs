@@ -1,14 +1,10 @@
-﻿using McMaster.Extensions.CommandLineUtils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using GISBlox.Services.CLI.Commands;
-using GISBlox.Services.CLI.Commands.Auth;
+﻿using GISBlox.Services.CLI.Commands.Auth;
 using GISBlox.Services.CLI.Commands.Convert;
-//using GISBlox.Services.CLI.Commands.Project;
+using GISBlox.Services.CLI.Commands.Project;
+using McMaster.Extensions.CommandLineUtils;
+using System;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI
 {
@@ -18,7 +14,8 @@ namespace GISBlox.Services.CLI
          typeof(LoginCmd),
          typeof(LogoutCmd),
          typeof(StatusCmd),
-         typeof(ConvertCmd)
+         typeof(ConvertCmd),
+         typeof(Project)
       )]
    class Cmd : CmdBase
    {

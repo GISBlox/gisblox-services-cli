@@ -2,7 +2,7 @@
   "profiles": {
     "GISBlox.Services.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "status"
+      "commandLineArgs": "project to-rds -c \"53.3, 4.15\" -s -l true"
     }
   }
 }
