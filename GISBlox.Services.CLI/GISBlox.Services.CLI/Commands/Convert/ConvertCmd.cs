@@ -1,10 +1,7 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using GISBlox.Services.SDK.Models;
+using McMaster.Extensions.CommandLineUtils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using GISBlox.Services.SDK.Models;
 
 namespace GISBlox.Services.CLI.Commands.Convert
 {

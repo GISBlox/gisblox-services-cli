@@ -18,7 +18,7 @@ namespace GISBlox.Services.CLI.Commands.Project
       [Option(CommandOptionType.NoValue, ShortName = "s", LongName = "source", Description = "include source", ValueName = "source", ShowInHelpText = true)]
       public bool IncludeSource { get; set; }
 
-      [Option(CommandOptionType.SingleValue, ShortName = "l", LongName = "lat-lon", Description = "lat-lon format", ValueName = "lat-lon", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon", Description = "lat-lon format", ValueName = "lat-lon", ShowInHelpText = true)]
       public bool LatLonFormat { get; set; }
 
       [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "output", Description = "output file", ValueName = "output file", ShowInHelpText = true)]

@@ -40,7 +40,9 @@ namespace GISBlox.Services.CLI
             return _gisbloxClient;
          }
       }
-           
+
+      #region User profile
+
       protected string ProfileFolder
       {
          get
@@ -104,7 +106,11 @@ namespace GISBlox.Services.CLI
          await File.WriteAllTextAsync(ProfileFullName, JsonSerializer.Serialize(profile, typeof(UserProfile)), UTF8Encoding.UTF8);         
       }
 
-      protected string SecureStringToString(SecureString value)
+      #endregion
+
+      #region Security utils
+
+      protected static string SecureStringToString(SecureString value)
       {
          IntPtr valuePtr = IntPtr.Zero;
          try
@@ -118,7 +124,7 @@ namespace GISBlox.Services.CLI
          }
       }
 
-      private string EncryptKey
+      private static string EncryptKey
       {
          get
          {
@@ -140,7 +146,7 @@ namespace GISBlox.Services.CLI
          }
       }
 
-      protected string Encrypt(string text)
+      protected static string Encrypt(string text)
       {
          var keyString = EncryptKey;
          var key = Encoding.UTF8.GetBytes(keyString);
@@ -166,7 +172,7 @@ namespace GISBlox.Services.CLI
          }
       }
 
-      protected string Decrypt(string cipherText)
+      protected static string Decrypt(string cipherText)
       {
          var keyString = EncryptKey;
          var fullCipher = Convert.FromBase64String(cipherText);
@@ -196,6 +202,43 @@ namespace GISBlox.Services.CLI
             }
          }
       }
+
+      #endregion
+
+      #region Parsers
+
+      /// <summary>
+      /// Converts a string into a Coordinate type.
+      /// </summary>
+      /// <param name="coordinate">A string containing a coordinate pair in 'x,y' format.</param>
+      /// <param name="latLon">Set to True if the coordinate pair is passed in lat/lon order, False if in lon/lat order.</param>
+      /// <returns>A Coordinate type with the converted coordinate string.</returns>
+      protected static Coordinate CoordinateFromString(string coordinate, bool latLon = true)
+      {
+         Coordinate c = new();
+         if (coordinate == null || coordinate.Length == 0)
+            throw new ArgumentNullException(nameof(coordinate));
+         string[] splitCoordinate = coordinate.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+         if (splitCoordinate.Length != 2)
+            throw new ArgumentException("Invalid coordinate string.");
+         if (!double.TryParse(splitCoordinate[0].Replace(".", ","), out double x))
+            throw new ArgumentException("Invalid coordinate string: the X component (" + splitCoordinate[0].Replace(".", ",") + ") is not of type 'double'.");
+         if (!double.TryParse(splitCoordinate[1].Replace(".", ","), out double y))
+            throw new ArgumentException("Invalid coordinate string: the Y component (" + splitCoordinate[1].Replace(".", ",") + ") is not of type 'double'.");
+         if (latLon)
+         {
+            c.Lat = x;
+            c.Lon = y;
+         }
+         else
+         {
+            c.Lat = y;
+            c.Lon = x;
+         }
+         return c;
+      }
+
+      #endregion
 
       protected void OnException(Exception ex)
       {
@@ -243,39 +286,6 @@ namespace GISBlox.Services.CLI
          _console.ForegroundColor = ConsoleColor.White;
          _console.Error.WriteLine(message);
          _console.ResetColor();
-      }
-
-      /// <summary>
-      /// Converts a string into a Coordinate type.
-      /// </summary>
-      /// <param name="coordinate">A string containing a coordinate pair in 'x,y' format.</param>
-      /// <param name="latLon">Set to True if the coordinate pair is passed in lat/lon order, False if in lon/lat order.</param>
-      /// <returns>A Coordinate type with the converted coordinate string.</returns>
-      protected Coordinate CoordinateFromString(string coordinate, bool latLon = true)
-      {         
-         double x, y;
-         Coordinate c = new();
-         
-         if (coordinate == null || coordinate.Length == 0)
-            throw new ArgumentNullException("coordinate");
-         string[] splitCoordinate = coordinate.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-         if (splitCoordinate.Length != 2)
-            throw new ArgumentException("Invalid coordinate string.");
-         if (!Double.TryParse(splitCoordinate[0].Replace(".", ","), out x))
-            throw new ArgumentException("Invalid coordinate string: the X component (" + splitCoordinate[0].Replace(".", ",") + ") is not of type 'double'.");
-         if (!Double.TryParse(splitCoordinate[1].Replace(".", ","), out y))
-            throw new ArgumentException("Invalid coordinate string: the Y component (" + splitCoordinate[1].Replace(".", ",") + ") is not of type 'double'.");
-         if (latLon)
-         {
-            c.Lat = x;
-            c.Lon = y;            
-         }
-         else
-         {
-            c.Lat = y;
-            c.Lon = x;            
-         }
-         return c;
-      }
+      }    
    }
 }
