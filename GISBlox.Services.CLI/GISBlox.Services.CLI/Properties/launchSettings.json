@@ -2,7 +2,7 @@
   "profiles": {
     "GISBlox.Services.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "project to-rds -c \"53.3, 4.15\" -s -l true"
+      "commandLineArgs": "project to-rds -i \"C:\\Users\\thirt\\OneDrive\\Desktop\\testdata.txt\" -o \"C:\\Users\\thirt\\OneDrive\\Desktop\\testout.txt\" -l true -s \";\" -is"
     }
   }
 }

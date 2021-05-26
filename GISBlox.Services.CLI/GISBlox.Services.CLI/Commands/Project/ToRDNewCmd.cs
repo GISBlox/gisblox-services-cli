@@ -1,4 +1,5 @@
-﻿using GISBlox.Services.SDK.Models;
+﻿using GISBlox.Services.CLI.Utils;
+using GISBlox.Services.SDK.Models;
 using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,11 @@ namespace GISBlox.Services.CLI.Commands.Project
    {
       [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "coord", Description = "coordinate", ValueName = "coordinate", ShowInHelpText = true)]
       public string Coordinate { get; set; }
+      
+      [Option(CommandOptionType.SingleValue, ShortName = "s", LongName = "sep", Description = "coordinate separator", ValueName = "coordinate separator", ShowInHelpText = true)]
+      public string Separator { get; set; }
 
-      [Option(CommandOptionType.NoValue, ShortName = "s", LongName = "source", Description = "include source", ValueName = "source", ShowInHelpText = true)]
+      [Option(CommandOptionType.NoValue, ShortName = "is", LongName = "source", Description = "include source", ValueName = "source", ShowInHelpText = true)]
       public bool IncludeSource { get; set; }
 
       [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon", Description = "lat-lon format", ValueName = "lat-lon", ShowInHelpText = true)]
@@ -44,8 +48,8 @@ namespace GISBlox.Services.CLI.Commands.Project
             {
                if (!string.IsNullOrEmpty(Coordinate) && string.IsNullOrEmpty(InputFile) && string.IsNullOrEmpty(OutputFile))
                {
-                  // Single coordinate                  
-                  Coordinate c = CoordinateFromString(Coordinate, LatLonFormat);
+                  // Single coordinate                                    
+                  Coordinate c = PositionParser.CoordinateFromString(Coordinate, Separator, LatLonFormat ? CoordinateOrder.LatLon : CoordinateOrder.LonLat);
                   if (IncludeSource)
                   {
                      Location location = await GISBloxClient.Projection.ToRDSComplete(c);
@@ -61,6 +65,21 @@ namespace GISBlox.Services.CLI.Commands.Project
                else if (!string.IsNullOrEmpty(InputFile) && !string.IsNullOrEmpty(OutputFile))
                {
                   // Process file
+                  OutputToConsole("Processing file...");
+                  List<Coordinate> coordinates = await IO.LoadCoordinatesFromCSVFile(InputFile, Separator, true, LatLonFormat ? CoordinateOrder.LatLon : CoordinateOrder.LonLat);
+                  
+                  OutputToConsole("Writing output...");
+                  if (IncludeSource)
+                  {
+                     List<Location> locations = await GISBloxClient.Projection.ToRDSComplete(coordinates);
+                     
+                     //locations.ForEach(l => OutputToConsole($"Lat: { l.Lat } Lon: { l.Lon } X:{ l.X } Y:{ l.Y }", ConsoleColor.Green));
+                  }
+                  else
+                  {
+                     List<RDPoint> rdPoints = await GISBloxClient.Projection.ToRDS(coordinates);
+                     //rdPoints.ForEach(p => OutputToConsole($"X:{ p.X } Y:{ p.Y }", ConsoleColor.Green));
+                  }
                   return 0;
                }
                else

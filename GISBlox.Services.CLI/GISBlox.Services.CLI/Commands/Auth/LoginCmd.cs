@@ -1,4 +1,5 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿using GISBlox.Services.CLI.Utils;
+using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Threading.Tasks;
 
@@ -30,11 +31,11 @@ namespace GISBlox.Services.CLI.Commands.Auth
                // Get the service key from the user if not provided on the command line
                if (string.IsNullOrEmpty(Token))
                {
-                  Token = SecureStringToString(Prompt.GetPasswordAsSecureString("Service key:"));
+                  Token = Security.SecureStringToString(Prompt.GetPasswordAsSecureString("Service key:"));
                }
 
                // Create a user profile with the encrypted service key
-               var newProfile = new UserProfile() { ServiceKey = Encrypt(Token) };               
+               var newProfile = new UserProfile() { ServiceKey = Security.Encrypt(Token) };               
                await SaveUserProfile(newProfile);
 
                // Make an API call to authorize user
