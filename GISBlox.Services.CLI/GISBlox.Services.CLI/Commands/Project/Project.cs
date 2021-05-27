@@ -5,6 +5,7 @@ namespace GISBlox.Services.CLI.Commands.Project
 {
    [Command(Name = "project", Description = "Contains commands to re-project coordinates.", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]   
    [Subcommand(
+         typeof(ToCoordinateCmd),
          typeof(ToRDNewCmd)         
       )]
    class Project : CmdBase

@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI
 {
-   [Command(Name = "gbs", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
-   [VersionOptionFromMember("--version", MemberName = nameof(GetVersion))]
+   [Command(Name = "gbs", Description = "GISBlox Services CLI", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
+   [VersionOptionFromMember("--version", ShortName = "v", LongName = "Version", MemberName = nameof(GetVersion))]
    [Subcommand(
          typeof(LoginCmd),
          typeof(LogoutCmd),

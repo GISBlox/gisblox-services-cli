@@ -3,20 +3,18 @@ using GISBlox.Services.SDK.Models;
 using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Commands.Project
 {
-   [Command(Name = "to-rds", Description = "Converts coordinates to Rijksdriehoekstelsel (RDNew) locations. Projects a single coordinate, or batch-processes a file with coordinates.", 
+   [Command(Name = "to-rds", Description = "Converts WGS84 coordinates to Rijksdriehoekstelsel (RDNew) locations. Projects a single coordinate, or batch-processes a file with coordinates.", 
             OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
    class ToRDNewCmd : CmdBase
    {
-      [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "coord", Description = "The coordinate to project to RDNew.", ValueName = "coordinate", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "coordinate", Description = "The coordinate to project to a RDNew location.", ValueName = "coordinate", ShowInHelpText = true)]
       public string Coordinate { get; set; }
       
-      [Option(CommandOptionType.SingleValue, ShortName = "s", LongName = "sep", Description = "Specifies the coordinate separator, e.g. \";\".", ValueName = "coordinate separator", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "s", LongName = "separator", Description = "Specifies the coordinate separator, e.g. \";\".", ValueName = "separator", ShowInHelpText = true)]
       public string Separator { get; set; }
 
       [Option(CommandOptionType.NoValue, ShortName = "is", LongName = "include-source", Description = "Includes the source coordinate in the result if specified.", ValueName = "source", ShowInHelpText = true)]
@@ -31,16 +29,17 @@ namespace GISBlox.Services.CLI.Commands.Project
       [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "format", Description = "The file format to use (CSV or XLS).", ValueName = "file format", ShowInHelpText = true)]
       public string FileFormat { get; set; }
 
-      [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "True to specify the input file contains headers.", ValueName = "headers", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "True to specify the input file contains headers.", ValueName = "true/false", ShowInHelpText = true)]
       public bool HasHeaders { get; set; }
 
-      [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon", Description = "True to specify the coordinates are in lat-lon format, False if they are in lon-lat format (file only).", ValueName = "lat-lon", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon-format", Description = "True to specify the coordinates are stored in lat-lon format, False if they are stored in lon-lat format (file only).", ValueName = "true/false", ShowInHelpText = true)]
       public bool LatLonFormat { get; set; }
 
       public ToRDNewCmd(IConsole console)
       {
          _console = console;
       }
+
       protected override async Task<int> OnExecute(CommandLineApplication app)
       {
          try
@@ -59,12 +58,12 @@ namespace GISBlox.Services.CLI.Commands.Project
                   if (IncludeSource)
                   {
                      Location location = await GISBloxClient.Projection.ToRDSComplete(c);
-                     OutputToConsole($"Lat: { location.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) } Lon: { location.Lon.ToString(System.Globalization.CultureInfo.InvariantCulture) } X:{ location.X } Y:{ location.Y }", ConsoleColor.Green);
+                     OutputToConsole($"Lat: { location.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) } Lon: { location.Lon.ToString(System.Globalization.CultureInfo.InvariantCulture) } X: { location.X } Y: { location.Y }", ConsoleColor.Green);
                   }
                   else
                   {
                      RDPoint rdPoint = await GISBloxClient.Projection.ToRDS(c);
-                     OutputToConsole($"X:{ rdPoint.X } Y:{ rdPoint.Y }", ConsoleColor.Green);
+                     OutputToConsole($"X: { rdPoint.X } Y: { rdPoint.Y }", ConsoleColor.Green);
                   }
                   return 0;
                }

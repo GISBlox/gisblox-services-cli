@@ -29,15 +29,18 @@ namespace GISBlox.Services.CLI.Utils
       /// </summary>
       /// <param name="location">A string containing a location pair.</param>
       /// <param name="separator">The character used to separate the points in the location pair.</param>
+      /// <param name="rdPointOrder">Specifies whether the location pair is in X/Y or Y/X order.</param>
       /// <returns>An RDPoint type.</returns>
-      public static RDPoint RDPointFromString(string location, string separator)
+      public static RDPoint RDPointFromString(string location, string separator, RDPointOrderEnum rdPointOrder)
       {
          if (string.IsNullOrEmpty(location))
          {
             throw new ArgumentNullException(nameof(location));
          }
          string[] pair = GetCoordinatePair(location, separator);
-         return new RDPoint(ParseRDPoint(pair[0]), ParseRDPoint(pair[1]));
+         int a = ParseRDPoint(pair[0]);
+         int b = ParseRDPoint(pair[1]);
+         return (rdPointOrder == RDPointOrderEnum.XY) ? new RDPoint(a, b) : new RDPoint(b, a);
       }
 
       /// <summary>

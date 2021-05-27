@@ -76,15 +76,15 @@ namespace GISBlox.Services.CLI.Utils
       /// <param name="firstLineContainsHeaders">Determines whether to skip the first line in the file.</param>
       /// <param name="fileFormat">The input file format.</param>
       /// <returns>A List with RDPoint types.</returns>
-      public static async Task<List<RDPoint>> LoadRDPointsFromFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, string fileFormat)
+      public static async Task<List<RDPoint>> LoadRDPointsFromFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, RDPointOrderEnum rdPointOrder, string fileFormat)
       {
          FileFormatEnum format = ParseFileFormat(fileFormat);
          switch (format)
          {
             case FileFormatEnum.CSV:
-               return await LoadRDPointsFromCSVFile(fileName, columnSeparator, firstLineContainsHeaders);
+               return await LoadRDPointsFromCSVFile(fileName, columnSeparator, firstLineContainsHeaders, rdPointOrder);
             case FileFormatEnum.XLS:
-               return await LoadRDPointsFromXLSFile(fileName, firstLineContainsHeaders);               
+               return await LoadRDPointsFromXLSFile(fileName, firstLineContainsHeaders, rdPointOrder);               
             default:
                return null;
          }
@@ -97,7 +97,7 @@ namespace GISBlox.Services.CLI.Utils
       /// <param name="columnSeparator">The character that was used to separate the coordinates in the file.</param>
       /// <param name="firstLineContainsHeaders">Determines whether to skip the first line in the file.</param>
       /// <returns>A List with RDPoint types.</returns>
-      private static async Task<List<RDPoint>> LoadRDPointsFromCSVFile(string fileName, string columnSeparator, bool firstLineContainsHeaders)
+      private static async Task<List<RDPoint>> LoadRDPointsFromCSVFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, RDPointOrderEnum rdPointOrder)
       {
          List<RDPoint> points = new();
          using (StreamReader sr = new(fileName))
@@ -111,14 +111,14 @@ namespace GISBlox.Services.CLI.Utils
                string rowData = await sr.ReadLineAsync();
                if (!string.IsNullOrEmpty(rowData))
                {
-                  points.Add(PositionParser.RDPointFromString(rowData, columnSeparator));
+                  points.Add(PositionParser.RDPointFromString(rowData, columnSeparator, rdPointOrder));
                }
             }
          }
          return points;
       }
 
-      private static async Task<List<RDPoint>> LoadRDPointsFromXLSFile(string fileName, bool firstLineContainsHeaders)
+      private static async Task<List<RDPoint>> LoadRDPointsFromXLSFile(string fileName, bool firstLineContainsHeaders, RDPointOrderEnum rdPointOrder)
       {
          List<RDPoint> points = new();         
          return points;
