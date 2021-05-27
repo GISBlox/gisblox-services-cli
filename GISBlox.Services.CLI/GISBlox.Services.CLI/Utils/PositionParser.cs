@@ -12,7 +12,7 @@ namespace GISBlox.Services.CLI.Utils
       /// <param name="separator">The character used to separate the points in the coordinate pair.</param>
       /// <param name="coordinateOrder">Specifies whether the coordinates are in lat/lon or lon/lat order.</param>
       /// <returns>A Coordinate type.</returns>
-      public static Coordinate CoordinateFromString(string coordinate, string separator, CoordinateOrder coordinateOrder)
+      public static Coordinate CoordinateFromString(string coordinate, string separator, CoordinateOrderEnum coordinateOrder)
       {
          if (string.IsNullOrEmpty(coordinate))
          {
@@ -21,7 +21,7 @@ namespace GISBlox.Services.CLI.Utils
          string[] pair = GetCoordinatePair(coordinate, separator);
          double a = ParseCoordinatePoint(pair[0]);
          double b = ParseCoordinatePoint(pair[1]);
-         return (coordinateOrder == CoordinateOrder.LatLon) ? new Coordinate(a, b) : new Coordinate(b, a);
+         return (coordinateOrder == CoordinateOrderEnum.LatLon) ? new Coordinate(a, b) : new Coordinate(b, a);
       }
 
       /// <summary>
@@ -40,6 +40,12 @@ namespace GISBlox.Services.CLI.Utils
          return new RDPoint(ParseRDPoint(pair[0]), ParseRDPoint(pair[1]));
       }
 
+      /// <summary>
+      /// Splits the specified position into two strings.
+      /// </summary>
+      /// <param name="position">A string containint the position to split.</param>
+      /// <param name="separator">The character used to separate the position in a location pair.</param>
+      /// <returns></returns>
       private static string[] GetCoordinatePair(string position, string separator)
       {
          string[] pair = position.Split(new string[] { separator }, StringSplitOptions.RemoveEmptyEntries);
@@ -50,6 +56,11 @@ namespace GISBlox.Services.CLI.Utils
          return pair;
       }
 
+      /// <summary>
+      /// Parses the given point into a double.
+      /// </summary>
+      /// <param name="point">A Ccoordinate point string.</param>
+      /// <returns>A double type.</returns>
       private static double ParseCoordinatePoint(string point)
       {
          if (!double.TryParse(point, System.Globalization.NumberStyles.Number | System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out double value))
@@ -59,6 +70,11 @@ namespace GISBlox.Services.CLI.Utils
          return value;
       }
 
+      /// <summary>
+      /// Parses the given point into an int.
+      /// </summary>
+      /// <param name="point">An RDPoint string.</param>
+      /// <returns>An int type.</returns>
       private static int ParseRDPoint(string point)
       {
          if (!int.TryParse(point, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out int value))

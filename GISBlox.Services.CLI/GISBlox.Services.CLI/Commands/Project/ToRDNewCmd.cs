@@ -25,11 +25,17 @@ namespace GISBlox.Services.CLI.Commands.Project
       [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon", Description = "lat-lon format", ValueName = "lat-lon", ShowInHelpText = true)]
       public bool LatLonFormat { get; set; }
 
+      [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "the input file contains headers", ValueName = "headers", ShowInHelpText = true)]
+      public bool HasHeaders { get; set; }
+
       [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "output", Description = "output file", ValueName = "output file", ShowInHelpText = true)]
       public string OutputFile { get; set; }
 
       [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "input", Description = "input file", ValueName = "input file", ShowInHelpText = true)]
       public string InputFile { get; set; }
+
+      [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "format", Description = "the file format to use", ValueName = "file format", ShowInHelpText = true)]
+      public string FileFormat { get; set; }
 
       public ToRDNewCmd(IConsole console)
       {
@@ -49,11 +55,11 @@ namespace GISBlox.Services.CLI.Commands.Project
                if (!string.IsNullOrEmpty(Coordinate) && string.IsNullOrEmpty(InputFile) && string.IsNullOrEmpty(OutputFile))
                {
                   // Single coordinate                                    
-                  Coordinate c = PositionParser.CoordinateFromString(Coordinate, Separator, LatLonFormat ? CoordinateOrder.LatLon : CoordinateOrder.LonLat);
+                  Coordinate c = PositionParser.CoordinateFromString(Coordinate, Separator, LatLonFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat);
                   if (IncludeSource)
                   {
                      Location location = await GISBloxClient.Projection.ToRDSComplete(c);
-                     OutputToConsole($"Lat: { location.Lat } Lon: { location.Lon } X:{ location.X } Y:{ location.Y }", ConsoleColor.Green);
+                     OutputToConsole($"Lat: { location.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) } Lon: { location.Lon.ToString(System.Globalization.CultureInfo.InvariantCulture) } X:{ location.X } Y:{ location.Y }", ConsoleColor.Green);
                   }
                   else
                   {
@@ -64,22 +70,29 @@ namespace GISBlox.Services.CLI.Commands.Project
                }
                else if (!string.IsNullOrEmpty(InputFile) && !string.IsNullOrEmpty(OutputFile))
                {
-                  // Process file
-                  OutputToConsole("Processing file...");
-                  List<Coordinate> coordinates = await IO.LoadCoordinatesFromCSVFile(InputFile, Separator, true, LatLonFormat ? CoordinateOrder.LatLon : CoordinateOrder.LonLat);
+                  // Validate parameter(s)
+                  if (string.IsNullOrEmpty(Separator))
+                  {
+                     throw new ArgumentNullException(nameof(Separator));
+                  }
                   
+                  // Process file
+                  OutputToConsole($"Processing file '{ InputFile }'...");                  
+                  List<Coordinate> coordinates = await IO.LoadCoordinatesFromFile(InputFile, Separator, HasHeaders, LatLonFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat, FileFormat);
+                  
+                  OutputToConsole("Successfully processed file", ConsoleColor.Green);
                   OutputToConsole("Writing output...");
                   if (IncludeSource)
                   {
                      List<Location> locations = await GISBloxClient.Projection.ToRDSComplete(coordinates);
-                     
-                     //locations.ForEach(l => OutputToConsole($"Lat: { l.Lat } Lon: { l.Lon } X:{ l.X } Y:{ l.Y }", ConsoleColor.Green));
+                     await IO.SaveToCSVFile(OutputFile, Separator, locations);                     
                   }
                   else
                   {
                      List<RDPoint> rdPoints = await GISBloxClient.Projection.ToRDS(coordinates);
-                     //rdPoints.ForEach(p => OutputToConsole($"X:{ p.X } Y:{ p.Y }", ConsoleColor.Green));
+                     await IO.SaveToCSVFile(OutputFile, Separator, rdPoints);
                   }
+                  OutputToConsole($"Output saved to file '{ OutputFile }'", ConsoleColor.Green);
                   return 0;
                }
                else
@@ -94,6 +107,6 @@ namespace GISBlox.Services.CLI.Commands.Project
             OnException(ex);
             return 1;
          }
-      }
+      }      
    }
 }

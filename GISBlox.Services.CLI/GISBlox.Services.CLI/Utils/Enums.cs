@@ -6,5 +6,7 @@ using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Utils
 {
-   internal enum CoordinateOrder { LatLon, LonLat, Invariant };
+   internal enum CoordinateOrderEnum { LatLon, LonLat, Invariant };
+
+   internal enum FileFormatEnum { CSV, XLS };
 }
