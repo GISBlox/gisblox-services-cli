@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Commands.Convert
 {
-   [Command(Name = "convert", Description = "Convert WKT geometries into GeoJson")]   
+   [Command(Name = "convert", Description = "Converts WKT geometries into GeoJson.", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]   
    class ConvertCmd : CmdBase
    {
-      [Option(CommandOptionType.SingleValue, ShortName = "w", LongName = "wkt", Description = "WKT geometry", ValueName = "wkt", ShowInHelpText = true)]      
+      [Option(CommandOptionType.SingleValue, ShortName = "w", LongName = "wkt", Description = "The WKT geometry to convert.", ValueName = "wkt", ShowInHelpText = true)]      
       public string Wkt { get; set; }
 
-      [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "geojson", Description = "GeoJson", ValueName = "geojson", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "g", LongName = "geojson", Description = "The GeoJson to convert.", ValueName = "geojson", ShowInHelpText = false)]
       public string GeoJson { get; set; }
 
       public ConvertCmd(IConsole console)

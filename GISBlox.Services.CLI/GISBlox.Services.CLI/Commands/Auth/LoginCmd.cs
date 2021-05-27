@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Commands.Auth
 {
-   [Command(Name = "login", Description = "Authenticate with a GISBlox Services host.")]
+   [Command(Name = "login", Description = "Authenticate with a GISBlox Services host.", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
    class LoginCmd : CmdBase
    {
-      [Option(CommandOptionType.SingleValue, ShortName = "t", LongName = "with-token", Description = "GISBlox Services service key", ValueName = "service key", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "t", LongName = "with-token", Description = "Authenticate with a GISBlox Services service key.", ValueName = "service key", ShowInHelpText = true)]
       public string Token { get; set; }
 
       public LoginCmd(IConsole console)

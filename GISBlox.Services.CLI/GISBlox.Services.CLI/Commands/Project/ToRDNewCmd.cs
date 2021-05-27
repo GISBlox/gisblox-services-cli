@@ -9,33 +9,33 @@ using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Commands.Project
 {
-   [Command(Name = "to-rds", Description = "Converts coordinates to Rijksdriehoekstelsel (RDNew) locations.")]
-
+   [Command(Name = "to-rds", Description = "Converts coordinates to Rijksdriehoekstelsel (RDNew) locations. Projects a single coordinate, or batch-processes a file with coordinates.", 
+            OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
    class ToRDNewCmd : CmdBase
    {
-      [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "coord", Description = "coordinate", ValueName = "coordinate", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "coord", Description = "The coordinate to project to RDNew.", ValueName = "coordinate", ShowInHelpText = true)]
       public string Coordinate { get; set; }
       
-      [Option(CommandOptionType.SingleValue, ShortName = "s", LongName = "sep", Description = "coordinate separator", ValueName = "coordinate separator", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "s", LongName = "sep", Description = "Specifies the coordinate separator, e.g. \";\".", ValueName = "coordinate separator", ShowInHelpText = true)]
       public string Separator { get; set; }
 
-      [Option(CommandOptionType.NoValue, ShortName = "is", LongName = "source", Description = "include source", ValueName = "source", ShowInHelpText = true)]
+      [Option(CommandOptionType.NoValue, ShortName = "is", LongName = "include-source", Description = "Includes the source coordinate in the result if specified.", ValueName = "source", ShowInHelpText = true)]
       public bool IncludeSource { get; set; }
 
-      [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon", Description = "lat-lon format", ValueName = "lat-lon", ShowInHelpText = true)]
-      public bool LatLonFormat { get; set; }
-
-      [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "the input file contains headers", ValueName = "headers", ShowInHelpText = true)]
-      public bool HasHeaders { get; set; }
-
-      [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "output", Description = "output file", ValueName = "output file", ShowInHelpText = true)]
-      public string OutputFile { get; set; }
-
-      [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "input", Description = "input file", ValueName = "input file", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "input", Description = "The input file that contains the coordinates to project.", ValueName = "input file", ShowInHelpText = true)]
       public string InputFile { get; set; }
 
-      [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "format", Description = "the file format to use", ValueName = "file format", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "output", Description = "The output file to which to write the result.", ValueName = "output file", ShowInHelpText = true)]
+      public string OutputFile { get; set; }
+
+      [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "format", Description = "The file format to use (CSV or XLS).", ValueName = "file format", ShowInHelpText = true)]
       public string FileFormat { get; set; }
+
+      [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "True to specify the input file contains headers.", ValueName = "headers", ShowInHelpText = true)]
+      public bool HasHeaders { get; set; }
+
+      [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon", Description = "True to specify the coordinates are in lat-lon format, False if they are in lon-lat format (file only).", ValueName = "lat-lon", ShowInHelpText = true)]
+      public bool LatLonFormat { get; set; }
 
       public ToRDNewCmd(IConsole console)
       {

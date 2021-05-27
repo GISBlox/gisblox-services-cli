@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Commands.Auth
 {
-   [Command(Name = "logout", Description = "Log out of a GISBlox Services host.")]
+   [Command(Name = "logout", Description = "Log out of a GISBlox Services host.", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
    class LogoutCmd : CmdBase
    {
       public LogoutCmd(IConsole console)

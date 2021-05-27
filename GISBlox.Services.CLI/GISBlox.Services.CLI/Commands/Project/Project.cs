@@ -1,13 +1,9 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Commands.Project
 {
-   [Command(Name = "project", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]   
+   [Command(Name = "project", Description = "Contains commands to re-project coordinates.", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]   
    [Subcommand(
          typeof(ToRDNewCmd)         
       )]

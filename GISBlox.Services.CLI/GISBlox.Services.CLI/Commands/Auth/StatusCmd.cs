@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Commands.Auth
 {
-   [Command(Name = "status", Description = "Verifies and displays information about your authentication state.")]
+   [Command(Name = "status", Description = "Verifies and displays information about your authentication state.", OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
    class StatusCmd : CmdBase
    {
       public StatusCmd(IConsole console)
