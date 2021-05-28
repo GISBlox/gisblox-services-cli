@@ -26,9 +26,6 @@ namespace GISBlox.Services.CLI.Commands.Project
       [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "output", Description = "The output file to which to write the result.", ValueName = "output file", ShowInHelpText = true)]
       public string OutputFile { get; set; }
 
-      [Option(CommandOptionType.SingleValue, ShortName = "f", LongName = "format", Description = "The file format to use (CSV or XLS).", ValueName = "file format", ShowInHelpText = true)]
-      public string FileFormat { get; set; }
-
       [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "True to specify the input file contains headers.", ValueName = "true/false", ShowInHelpText = true)]
       public bool HasHeaders { get; set; }
 
@@ -77,7 +74,7 @@ namespace GISBlox.Services.CLI.Commands.Project
                   
                   // Process file
                   OutputToConsole($"Processing file '{ InputFile }'...");                  
-                  List<Coordinate> coordinates = await IO.LoadCoordinatesFromFile(InputFile, Separator, HasHeaders, LatLonFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat, FileFormat);
+                  List<Coordinate> coordinates = await IO.LoadCoordinatesFromFile(InputFile, Separator, HasHeaders, LatLonFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat);
                   
                   OutputToConsole("Successfully processed file", ConsoleColor.Green);
                   OutputToConsole("Writing output...");

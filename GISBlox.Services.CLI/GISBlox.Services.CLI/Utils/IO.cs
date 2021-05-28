@@ -16,12 +16,11 @@ namespace GISBlox.Services.CLI.Utils
       /// <param name="fileName">The fully-qualified file name.</param>
       /// <param name="columnSeparator">The character that was used to separate the coordinates in the file.</param>
       /// <param name="firstLineContainsHeaders">Determines whether to skip the first line in the file.</param>
-      /// <param name="coordinateOrder">Specifies whether the coordinates in the file are stored in lat/lon or lon/lat order.</param>
-      /// <param name="fileFormat">The input file format.</param>
+      /// <param name="coordinateOrder">Specifies whether the coordinates in the file are stored in lat/lon or lon/lat order.</param>      
       /// <returns>A List with Coordinate types.</returns>
-      public static async Task<List<Coordinate>> LoadCoordinatesFromFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, CoordinateOrderEnum coordinateOrder, string fileFormat)
+      public static async Task<List<Coordinate>> LoadCoordinatesFromFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, CoordinateOrderEnum coordinateOrder)
       {
-         FileFormatEnum format = ParseFileFormat(fileFormat);
+         FileFormatEnum format = ParseFileFormat(fileName);
          switch (format)
          {
             case FileFormatEnum.CSV:
@@ -76,9 +75,9 @@ namespace GISBlox.Services.CLI.Utils
       /// <param name="firstLineContainsHeaders">Determines whether to skip the first line in the file.</param>
       /// <param name="fileFormat">The input file format.</param>
       /// <returns>A List with RDPoint types.</returns>
-      public static async Task<List<RDPoint>> LoadRDPointsFromFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, RDPointOrderEnum rdPointOrder, string fileFormat)
+      public static async Task<List<RDPoint>> LoadRDPointsFromFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, RDPointOrderEnum rdPointOrder)
       {
-         FileFormatEnum format = ParseFileFormat(fileFormat);
+         FileFormatEnum format = ParseFileFormat(fileName);
          switch (format)
          {
             case FileFormatEnum.CSV:
@@ -120,8 +119,17 @@ namespace GISBlox.Services.CLI.Utils
 
       private static async Task<List<RDPoint>> LoadRDPointsFromXLSFile(string fileName, bool firstLineContainsHeaders, RDPointOrderEnum rdPointOrder)
       {
-         List<RDPoint> points = new();         
-         return points;
+         List<RDPoint> points = new();
+         using (ExcelReader xlsReader = new(fileName))
+         {
+            string result;
+            result = xlsReader.ReadCellValue(1, "B2");
+            result = xlsReader.ReadCellValue(1, "B3");            
+
+            // range reader: init with range, then each read goes through cells in first row, then second row, etc. Take<cell>
+         }
+
+            return points;
       }
 
       #endregion
@@ -186,13 +194,20 @@ namespace GISBlox.Services.CLI.Utils
 
       #region File utils
 
-      protected static FileFormatEnum ParseFileFormat(string fileFormat)
+      protected static FileFormatEnum ParseFileFormat(string fileName)
       {
-         if (!Enum.TryParse<FileFormatEnum>(fileFormat, out FileFormatEnum sourceFileFormat))
+         FileInfo fi = new (fileName);
+         switch (fi.Extension)
          {
-            throw new ArgumentException($"Invalid file format: '{ fileFormat }' - available options: 'CSV' or 'XLS'");
-         }
-         return sourceFileFormat;
+            case ".csv":
+            case ".txt":
+               return FileFormatEnum.CSV;
+            case ".xls":
+            case ".xlsx":
+               return FileFormatEnum.XLS;
+            default:
+               throw new ArgumentException($"Unsupported file format '{ fi.Extension }'.");
+         }               
       }
 
       #endregion
