@@ -87,6 +87,37 @@ namespace GISBlox.Services.CLI.Utils
          return cellValue;
       }
 
+      public void ReadRangeValues(string sheetName, string rangeAddress)
+      {
+         Sheet theSheet = GetSheet(sheetName);
+         if (theSheet != null)
+         {
+            int sepPos = rangeAddress.IndexOf(":");
+            if (sepPos > 0)
+            {
+               CellAddress upperLeft = GetCellAddress(rangeAddress.Substring(0, sepPos));
+               CellAddress bottomRight = GetCellAddress(rangeAddress.Substring(sepPos + 1));
+               for (int row = upperLeft.RowIndex; row <= bottomRight.RowIndex; row++)
+               {
+                  for (int col = upperLeft.ColumnIndex; col <= bottomRight.ColumnIndex; col++)
+                  {
+                     Cell rangeCell = GetCell(theSheet, row, col);
+                     if (rangeCell != null)
+                     {
+                        // range reader: init with range, then each read goes through cells in first row, then second row, etc. Take<cell>
+                        string rangeCellValue = $"{ rangeCell.CellReference.Value }: { GetCellValue(rangeCell)}";
+                     }
+                  }
+               }
+            }
+            else
+            {
+               throw new ArgumentException($"Invalid range address.");
+            }
+         }
+
+      }
+
       #region Private methods
 
       /// <summary>
@@ -156,19 +187,28 @@ namespace GISBlox.Services.CLI.Utils
       /// <param name="address">The cell address.</param>
       /// <returns>The cell value as a string type.</returns>
       private string GetCellValue(Sheet sheet, string address)
+      {         
+         Cell cell = GetCell(sheet, address);
+         return GetCellValue(cell);         
+      }
+
+      /// <summary>
+      /// Returns a cell value.
+      /// </summary>      
+      /// <param name="cell">A cell.</param>
+      /// <returns>The cell value as a string type.</returns>
+      private string GetCellValue(Cell cell)
       {
          string cellValue = string.Empty;
-         Cell theCell = GetCell(sheet, address);
-
-         if (theCell != null && theCell.InnerText.Length > 0)
-         {            
+         if (cell != null && cell.InnerText.Length > 0)
+         {
             // integer number
-            cellValue = theCell.InnerText;
+            cellValue = cell.InnerText;
 
             // not an integet
-            if (theCell.DataType != null)
+            if (cell.DataType != null)
             {
-               switch (theCell.DataType.Value)
+               switch (cell.DataType.Value)
                {
                   case CellValues.Boolean:
                      switch (cellValue)
@@ -180,7 +220,7 @@ namespace GISBlox.Services.CLI.Utils
                            cellValue = "TRUE";
                            break;
                      }
-                     break;                  
+                     break;
                   case CellValues.SharedString:
                      var stringTable = _workbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
                      if (stringTable != null)
@@ -188,7 +228,7 @@ namespace GISBlox.Services.CLI.Utils
                         cellValue = stringTable.SharedStringTable.ElementAt(int.Parse(cellValue)).InnerText;
                      }
                      break;
-               }               
+               }
             }
          }
          return cellValue;
@@ -215,6 +255,50 @@ namespace GISBlox.Services.CLI.Utils
          return columnName;
       }
 
+      /// <summary>
+      /// Returns the column index.
+      /// </summary>
+      /// <param name="columnName">The column name.</param>
+      /// <returns>The column index.</returns>
+      private static int GetColumnIndex(string columnName)
+      {
+         int sum = 0;
+         columnName = columnName.ToUpperInvariant();
+
+         for (int i = 0; i < columnName.Length; i++)
+         {
+            sum *= 26;
+            sum += (columnName[i] - 'A' + 1);
+         }
+
+         return sum;
+      }
+
+      /// <summary>
+      /// Converts a cell address like 'B12' into a CellAddress type.
+      /// </summary>
+      /// <param name="address">The cell address.</param>
+      /// <returns>A CellAdress type.</returns>
+      private static CellAddress GetCellAddress(string address)
+      {
+         int startIndex = address.IndexOfAny("0123456789".ToCharArray());
+         return new CellAddress()
+         {
+            Column = address.Substring(0, startIndex),
+            ColumnIndex = GetColumnIndex(address.Substring(0, startIndex)),
+            RowIndex = int.Parse(address.Substring(startIndex))
+         };
+      }
+
       #endregion
+   }
+
+   internal struct CellAddress
+   {
+      public string Column { get; set; }
+
+      public int ColumnIndex { get; set; }
+
+      public int RowIndex { get; set; }
    }
 }

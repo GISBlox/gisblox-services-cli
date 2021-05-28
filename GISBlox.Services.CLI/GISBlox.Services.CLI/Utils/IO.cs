@@ -122,11 +122,12 @@ namespace GISBlox.Services.CLI.Utils
          List<RDPoint> points = new();
          using (ExcelReader xlsReader = new(fileName))
          {
+            xlsReader.ReadRangeValues("Sheet1", "A1:B4");
             string result;
             result = xlsReader.ReadCellValue(1, "B2");
             result = xlsReader.ReadCellValue(1, "B3");            
 
-            // range reader: init with range, then each read goes through cells in first row, then second row, etc. Take<cell>
+            
          }
 
             return points;
