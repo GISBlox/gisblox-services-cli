@@ -1,4 +1,6 @@
-﻿using GISBlox.Services.SDK.Models;
+﻿using BartelsOnline.Office.IO.Excel;
+using BartelsOnline.Office.IO.Excel.Models;
+using GISBlox.Services.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -122,15 +124,14 @@ namespace GISBlox.Services.CLI.Utils
          List<RDPoint> points = new();
          using (ExcelReader xlsReader = new(fileName))
          {
-            xlsReader.ReadRangeValues("Sheet1", "A1:B4");
-            string result;
-            result = xlsReader.ReadCellValue(1, "B2");
-            result = xlsReader.ReadCellValue(1, "B3");            
-
-            
+            var range = xlsReader.ReadRange(1, "A1:B4");
+            foreach (var row in range)
+            {
+               XlsRange colA = row[0];
+               XlsRange colB = row[1];
+            } 
          }
-
-            return points;
+         return points;
       }
 
       #endregion
