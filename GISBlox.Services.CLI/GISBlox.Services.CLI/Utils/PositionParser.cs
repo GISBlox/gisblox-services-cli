@@ -25,6 +25,28 @@ namespace GISBlox.Services.CLI.Utils
       }
 
       /// <summary>
+      /// Converts coordinate points into a single Coordinate type.
+      /// </summary>
+      /// <param name="coordinatePointA">A string containing the first coordinate point.</param>
+      /// <param name="coordinatePointB">A string containing the second coordinate point.</param>
+      /// <param name="coordinateOrder">Specifies whether the coordinates are in lat/lon or lon/lat order.</param>
+      /// <returns>A Coordinate type.</returns>
+      public static Coordinate CoordinateFromPoints(string coordinatePointA, string coordinatePointB, CoordinateOrderEnum coordinateOrder)
+      {
+         if (string.IsNullOrEmpty(coordinatePointA))
+         {
+            throw new ArgumentNullException(nameof(coordinatePointA));
+         }
+         if (string.IsNullOrEmpty(coordinatePointB))
+         {
+            throw new ArgumentNullException(nameof(coordinatePointB));
+         }
+         double a = ParseCoordinatePoint(coordinatePointA);
+         double b = ParseCoordinatePoint(coordinatePointB);
+         return (coordinateOrder == CoordinateOrderEnum.LatLon) ? new Coordinate(a, b) : new Coordinate(b, a);
+      }
+
+      /// <summary>
       /// Converts a string into a RDPoint type.
       /// </summary>
       /// <param name="location">A string containing a location pair.</param>

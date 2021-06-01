@@ -23,10 +23,13 @@ namespace GISBlox.Services.CLI.Commands.Project
       [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "input", Description = "The input file that contains the coordinates to project.", ValueName = "input file", ShowInHelpText = true)]
       public string InputFile { get; set; }
 
+      [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "range", Description = "The Excel range that contains the coordinates to project (only if the input file is an Excel file).", ValueName = "Excel range", ShowInHelpText = true)]
+      public string InputRange { get; set; }
+
       [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "output", Description = "The output file to which to write the result.", ValueName = "output file", ShowInHelpText = true)]
       public string OutputFile { get; set; }
 
-      [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "True to specify the input file contains headers.", ValueName = "true/false", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "True to specify the input file contains headers (ignored when the input file is an Excel file).", ValueName = "true/false", ShowInHelpText = true)]
       public bool HasHeaders { get; set; }
 
       [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon-format", Description = "True to specify the coordinates are stored in lat-lon format, False if they are stored in lon-lat format (file only).", ValueName = "true/false", ShowInHelpText = true)]
@@ -65,16 +68,10 @@ namespace GISBlox.Services.CLI.Commands.Project
                   return 0;
                }
                else if (!string.IsNullOrEmpty(InputFile) && !string.IsNullOrEmpty(OutputFile))
-               {
-                  // Validate parameter(s)
-                  if (string.IsNullOrEmpty(Separator))
-                  {
-                     throw new ArgumentNullException(nameof(Separator));
-                  }
-                  
-                  // Process file
+               {  
+                  // File with coordinates
                   OutputToConsole($"Processing file '{ InputFile }'...");                  
-                  List<Coordinate> coordinates = await IO.LoadCoordinatesFromFile(InputFile, Separator, HasHeaders, LatLonFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat);
+                  List<Coordinate> coordinates = await IO.LoadCoordinatesFromFile(InputFile, Separator, HasHeaders, LatLonFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat, InputRange);
                   
                   OutputToConsole("Successfully processed file", ConsoleColor.Green);
                   OutputToConsole("Writing output...");

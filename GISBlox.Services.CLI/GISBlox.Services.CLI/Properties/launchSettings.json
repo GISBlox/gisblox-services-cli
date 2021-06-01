@@ -2,7 +2,7 @@
   "profiles": {
     "GISBlox.Services.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "project to-wgs84 -i \"C:\\Users\\thirt\\OneDrive\\Desktop\\xmltest.xlsx\" -o \"C:\\Users\\thirt\\OneDrive\\Desktop\\testout-to-wgs84.csv\" -x true -h false -s \";\" -d 2"
+      "commandLineArgs": "project to-rds -i \"C:\\Users\\thirt\\OneDrive\\Desktop\\xmltest.xlsx\" -o \"C:\\Users\\thirt\\OneDrive\\Desktop\\testout-to-wgs84.csv\" -l true -r \"A:B\" -is"
     }
   }
 }

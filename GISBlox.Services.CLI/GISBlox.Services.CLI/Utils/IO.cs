@@ -17,10 +17,11 @@ namespace GISBlox.Services.CLI.Utils
       /// </summary>
       /// <param name="fileName">The fully-qualified file name.</param>
       /// <param name="columnSeparator">The character that was used to separate the coordinates in the file.</param>
-      /// <param name="firstLineContainsHeaders">Determines whether to skip the first line in the file.</param>
+      /// <param name="firstLineContainsHeaders">Determines whether to skip the first line in the file. Ignored if the input file is an Excel workbook.</param>
       /// <param name="coordinateOrder">Specifies whether the coordinates in the file are stored in lat/lon or lon/lat order.</param>      
+      /// <param name="inputRange">The Excel range that contains the coordinates to project (if applicable).</param>
       /// <returns>A List with Coordinate types.</returns>
-      public static async Task<List<Coordinate>> LoadCoordinatesFromFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, CoordinateOrderEnum coordinateOrder)
+      public static async Task<List<Coordinate>> LoadCoordinatesFromFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, CoordinateOrderEnum coordinateOrder, string inputRange)
       {
          FileFormatEnum format = ParseFileFormat(fileName);
          switch (format)
@@ -28,7 +29,7 @@ namespace GISBlox.Services.CLI.Utils
             case FileFormatEnum.CSV:
                return await LoadCoordinatesFromCSVFile(fileName, columnSeparator, firstLineContainsHeaders, coordinateOrder);               
             case FileFormatEnum.XLS:
-               return await LoadCoordinatesFromXLSFile(fileName, firstLineContainsHeaders, coordinateOrder);
+               return await LoadCoordinatesFromXLSFile(fileName, inputRange, coordinateOrder);
             default:
                return null;               
          }
@@ -43,7 +44,10 @@ namespace GISBlox.Services.CLI.Utils
       /// <param name="coordinateOrder">Specifies whether the coordinates in the file are stored in lat/lon or lon/lat order.</param>
       /// <returns>A List with Coordinate types.</returns>
       private static async Task<List<Coordinate>> LoadCoordinatesFromCSVFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, CoordinateOrderEnum coordinateOrder)
-      {
+      {         
+         if (string.IsNullOrEmpty(columnSeparator))         
+            throw new ArgumentNullException(nameof(columnSeparator));
+         
          List<Coordinate> coordinates = new();
          using (StreamReader sr = new(fileName))
          {
@@ -63,9 +67,24 @@ namespace GISBlox.Services.CLI.Utils
          return coordinates;
       }
 
-      private static async Task<List<Coordinate>> LoadCoordinatesFromXLSFile(string fileName, bool firstLineContainsHeaders, CoordinateOrderEnum coordinateOrder)
+      /// <summary>
+      /// Loads coordinates from an Excel file.
+      /// </summary>
+      /// <param name="fileName">The fully-qualified file name.</param>
+      /// <param name="inputRange">The Excel range that contains the coordinates to project.</param>
+      /// <param name="coordinateOrder">Specifies whether the coordinates in the file are stored in lat/lon or lon/lat order.</param>
+      /// <returns></returns>
+      private static async Task<List<Coordinate>> LoadCoordinatesFromXLSFile(string fileName, string inputRange, CoordinateOrderEnum coordinateOrder)
       {
-         List<Coordinate> coordinates = new();         
+         List<Coordinate> coordinates = new();
+         using (ExcelReader xlsReader = new(fileName))
+         {
+            List<List<XlsRange>> rows = xlsReader.ReadRange(1, inputRange);            
+            foreach (var row in rows)
+            {
+               coordinates.Add(PositionParser.CoordinateFromPoints(row[0].Value, row[1].Value, coordinateOrder));
+            }
+         }
          return coordinates;
       }
 
@@ -100,6 +119,9 @@ namespace GISBlox.Services.CLI.Utils
       /// <returns>A List with RDPoint types.</returns>
       private static async Task<List<RDPoint>> LoadRDPointsFromCSVFile(string fileName, string columnSeparator, bool firstLineContainsHeaders, RDPointOrderEnum rdPointOrder)
       {
+         if (string.IsNullOrEmpty(columnSeparator))
+            throw new ArgumentNullException(nameof(columnSeparator));
+
          List<RDPoint> points = new();
          using (StreamReader sr = new(fileName))
          {
@@ -147,6 +169,8 @@ namespace GISBlox.Services.CLI.Utils
       /// <returns></returns>
       public static async Task SaveToCSVFile(string fileName, string columnSeparator, List<Coordinate> coordinates)
       {
+         if (string.IsNullOrEmpty(columnSeparator)) columnSeparator = ";";
+
          using (StreamWriter sw = new(fileName))
          {
             foreach (var coordinate in coordinates)
@@ -165,6 +189,8 @@ namespace GISBlox.Services.CLI.Utils
       /// <returns></returns>
       public static async Task SaveToCSVFile(string fileName, string columnSeparator, List<RDPoint> points)
       {
+         if (string.IsNullOrEmpty(columnSeparator)) columnSeparator = ";";
+
          using (StreamWriter sw = new(fileName))
          {
             foreach (var point in points)
@@ -183,6 +209,8 @@ namespace GISBlox.Services.CLI.Utils
       /// <returns></returns>
       public static async Task SaveToCSVFile(string fileName, string columnSeparator, List<Location> locations)
       {
+         if (string.IsNullOrEmpty(columnSeparator)) columnSeparator = ";";
+
          using (StreamWriter sw = new(fileName))
          {
             foreach (var location in locations)
