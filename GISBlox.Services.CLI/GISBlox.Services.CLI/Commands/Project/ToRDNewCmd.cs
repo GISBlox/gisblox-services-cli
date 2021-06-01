@@ -11,10 +11,10 @@ namespace GISBlox.Services.CLI.Commands.Project
             OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
    class ToRDNewCmd : CmdBase
    {
-      [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "coordinate", Description = "The coordinate to project to a RDNew location.", ValueName = "coordinate", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "c", LongName = "coordinate", Description = "The coordinate to project to a RDNew location (ignored when an input file is used).", ValueName = "coordinate", ShowInHelpText = true)]
       public string Coordinate { get; set; }
       
-      [Option(CommandOptionType.SingleValue, ShortName = "s", LongName = "separator", Description = "Specifies the coordinate separator, e.g. \";\".", ValueName = "separator", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "s", LongName = "separator", Description = "Specifies the coordinate separator, e.g. \";\" (ignored when the input file is an Excel file).", ValueName = "separator", ShowInHelpText = true)]
       public string Separator { get; set; }
 
       [Option(CommandOptionType.NoValue, ShortName = "is", LongName = "include-source", Description = "Includes the source coordinate in the result if specified.", ValueName = "source", ShowInHelpText = true)]
@@ -32,7 +32,7 @@ namespace GISBlox.Services.CLI.Commands.Project
       [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "True to specify the input file contains headers (ignored when the input file is an Excel file).", ValueName = "true/false", ShowInHelpText = true)]
       public bool HasHeaders { get; set; }
 
-      [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon-format", Description = "True to specify the coordinates are stored in lat-lon format, False if they are stored in lon-lat format (file only).", ValueName = "true/false", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue,  ShortName = "l", LongName = "lat-lon-format", Description = "True to indicate the coordinates are specified in lat-lon format, False if they are specified in lon-lat format.", ValueName = "true/false", ShowInHelpText = true)]
       public bool LatLonFormat { get; set; }
 
       public ToRDNewCmd(IConsole console)

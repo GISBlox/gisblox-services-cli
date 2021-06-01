@@ -11,10 +11,10 @@ namespace GISBlox.Services.CLI.Commands.Project
             OptionsComparison = StringComparison.InvariantCultureIgnoreCase)]
    class ToCoordinateCmd : CmdBase
    {
-      [Option(CommandOptionType.SingleValue, ShortName = "l", LongName = "location", Description = "The RDNew location to project to a WGS84 coordinate.", ValueName = "location", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "l", LongName = "location", Description = "The RDNew location to project to a WGS84 coordinate (ignored when an input file is used).", ValueName = "location", ShowInHelpText = true)]
       public string Location { get; set; }
 
-      [Option(CommandOptionType.SingleValue, ShortName = "s", LongName = "separator", Description = "Specifies the location separator, e.g. \";\".", ValueName = "separator", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "s", LongName = "separator", Description = "Specifies the location separator, e.g. \";\" (ignored when the input file is an Excel file).", ValueName = "separator", ShowInHelpText = true)]
       public string Separator { get; set; }
       
       [Option(CommandOptionType.SingleValue, ShortName = "d", LongName = "decimals", Description = "Rounds the coordinate(s) to the specified amount of fractional digits.", ValueName = "decimals", ShowInHelpText = true)]
@@ -26,13 +26,16 @@ namespace GISBlox.Services.CLI.Commands.Project
       [Option(CommandOptionType.SingleValue, ShortName = "i", LongName = "input", Description = "The input file that contains the RDNew locations to project.", ValueName = "input file", ShowInHelpText = true)]
       public string InputFile { get; set; }
 
+      [Option(CommandOptionType.SingleValue, ShortName = "r", LongName = "range", Description = "The Excel range that contains the coordinates to project (only if the input file is an Excel file).", ValueName = "Excel range", ShowInHelpText = true)]
+      public string InputRange { get; set; }
+
       [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "output", Description = "The output file to which to write the result.", ValueName = "output file", ShowInHelpText = true)]
       public string OutputFile { get; set; }
 
-      [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "True to specify the input file contains headers.", ValueName = "true/false", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "headers", Description = "True to specify the input file contains headers (ignored when the input file is an Excel file).", ValueName = "true/false", ShowInHelpText = true)]
       public bool HasHeaders { get; set; }
 
-      [Option(CommandOptionType.SingleValue, ShortName = "x", LongName = "XY-format", Description = "True to specify the coordinates are stored in X-Y format, False if they are stored in Y-X format (file only).", ValueName = "true/false", ShowInHelpText = true)]
+      [Option(CommandOptionType.SingleValue, ShortName = "x", LongName = "XY-format", Description = "True to indicate the coordinates are specified in X-Y format, False if they are specified in Y-X format.", ValueName = "true/false", ShowInHelpText = true)]
       public bool XYFormat { get; set; }
 
       public ToCoordinateCmd(IConsole console)
@@ -69,15 +72,9 @@ namespace GISBlox.Services.CLI.Commands.Project
                }
                else if (!string.IsNullOrEmpty(InputFile) && !string.IsNullOrEmpty(OutputFile))
                {
-                  // Validate parameter(s)
-                  if (string.IsNullOrEmpty(Separator))
-                  {
-                     throw new ArgumentNullException(nameof(Separator));
-                  }
-
-                  // Process file
+                  // File with locations
                   OutputToConsole($"Processing file '{ InputFile }'...");
-                  List<RDPoint> rdPoints = await IO.LoadRDPointsFromFile(InputFile, Separator, HasHeaders, XYFormat ? RDPointOrderEnum.XY : RDPointOrderEnum.YX);
+                  List<RDPoint> rdPoints = await IO.LoadRDPointsFromFile(InputFile, Separator, HasHeaders, XYFormat ? RDPointOrderEnum.XY : RDPointOrderEnum.YX, InputRange);
 
                   OutputToConsole("Successfully processed file", ConsoleColor.Green);
                   OutputToConsole("Writing output...");

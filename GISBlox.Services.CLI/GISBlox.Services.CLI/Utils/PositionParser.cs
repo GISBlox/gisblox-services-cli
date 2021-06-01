@@ -6,7 +6,7 @@ namespace GISBlox.Services.CLI.Utils
    internal class PositionParser
    {
       /// <summary>
-      /// Converts a string into a Coordinate type.
+      /// Converts a coordinate string into a Coordinate type.
       /// </summary>
       /// <param name="coordinate">A string containing a coordinate pair.</param>
       /// <param name="separator">The character used to separate the points in the coordinate pair.</param>
@@ -19,9 +19,7 @@ namespace GISBlox.Services.CLI.Utils
             throw new ArgumentNullException(nameof(coordinate));
          }
          string[] pair = GetCoordinatePair(coordinate, separator);
-         double a = ParseCoordinatePoint(pair[0]);
-         double b = ParseCoordinatePoint(pair[1]);
-         return (coordinateOrder == CoordinateOrderEnum.LatLon) ? new Coordinate(a, b) : new Coordinate(b, a);
+         return CoordinateFromPoints(pair[0], pair[1], coordinateOrder);         
       }
 
       /// <summary>
@@ -47,7 +45,7 @@ namespace GISBlox.Services.CLI.Utils
       }
 
       /// <summary>
-      /// Converts a string into a RDPoint type.
+      /// Converts an RD location string into a RDPoint type.
       /// </summary>
       /// <param name="location">A string containing a location pair.</param>
       /// <param name="separator">The character used to separate the points in the location pair.</param>
@@ -60,8 +58,28 @@ namespace GISBlox.Services.CLI.Utils
             throw new ArgumentNullException(nameof(location));
          }
          string[] pair = GetCoordinatePair(location, separator);
-         int a = ParseRDPoint(pair[0]);
-         int b = ParseRDPoint(pair[1]);
+         return RDPointFromPoints(pair[0], pair[1], rdPointOrder);
+      }
+
+      /// <summary>
+      /// Converts RD location points into a single RDPoint type.
+      /// </summary>
+      /// <param name="rdPointA">A string containing the first location point.</param>
+      /// <param name="rdPointB">A string containing the second location point.</param>
+      /// <param name="rdPointOrder">Specifies whether the location pair is in X/Y or Y/X order.</param>
+      /// <returns>An RDPoint type.</returns>
+      public static RDPoint RDPointFromPoints(string rdPointA, string rdPointB, RDPointOrderEnum rdPointOrder)
+      {
+         if (string.IsNullOrEmpty(rdPointA))
+         {
+            throw new ArgumentNullException(nameof(rdPointA));
+         }
+         if (string.IsNullOrEmpty(rdPointB))
+         {
+            throw new ArgumentNullException(nameof(rdPointB));
+         }
+         int a = ParseRDPoint(rdPointA);
+         int b = ParseRDPoint(rdPointB);
          return (rdPointOrder == RDPointOrderEnum.XY) ? new RDPoint(a, b) : new RDPoint(b, a);
       }
 
