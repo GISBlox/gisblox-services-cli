@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GISBlox.Services.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "project to-wgs84 -i \"C:\\Users\\thirt\\OneDrive\\Desktop\\test-to-wgs84.txt\" -o \"C:\\Users\\thirt\\OneDrive\\Desktop\\testout-to-wgs84.csv\" -x true -h false -s \";\" -is -d 2"
+    }
+  }
+}
