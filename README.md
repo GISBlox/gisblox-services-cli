@@ -14,12 +14,3 @@ Open the solution file `GISBlox.Services.CLI.sln` in Visual Studio and build it.
 ## Using the build output
 
 The `gbs` executable in the `bin` directory can be run directly.
-
-## Running tests
-
-Run the following command from the `bin` directory to run the available CLI tests:
-
-```
-build.cmd -test
-```
-
