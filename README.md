@@ -14,3 +14,7 @@ Open the solution file `GISBlox.Services.CLI.sln` in Visual Studio and build it.
 ## Using the build output
 
 The `gbs` executable in the `bin` directory can be run directly.
+
+## Usage
+
+The documentation on how to use the CLI can be found [here](https://github.com/GISBlox/gisblox-services-cli/blob/main/documentation/README.md).
