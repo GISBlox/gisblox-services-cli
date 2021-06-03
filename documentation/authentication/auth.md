@@ -1,5 +1,5 @@
 # Authentication 
-Login, logout, and get information about your authentication state
+Login, logout, and get information about your authentication state.
 
 Available commands:
 - [login](#gbs-login)
@@ -46,7 +46,7 @@ $ gbs logout
 
 ### Options
 ```
---help                            Show help information.
+--help   Show help information.
 ```
 
 ## gbs status 
@@ -66,6 +66,6 @@ $ gbs status
 
 ### Options
 ```
---help                            Show help information.
+--help   Show help information.
 ```
 
