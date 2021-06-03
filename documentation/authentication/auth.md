@@ -22,7 +22,6 @@ gbs login [options]
 # authenticate against gisblox.com with a service key.
 
 $ gbs login --with-token MY_SERVICE_KEY
-
 ```
 
 ### Options
