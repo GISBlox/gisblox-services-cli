@@ -1,8 +1,13 @@
-﻿using GISBlox.Services.CLI.Utils;
+﻿// ------------------------------------------------------------
+// Copyright (c) Bartels Online.  All rights reserved.
+// ------------------------------------------------------------
+
+using GISBlox.Services.CLI.Utils;
 using GISBlox.Services.SDK.Models;
 using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Commands.Project
@@ -58,12 +63,12 @@ namespace GISBlox.Services.CLI.Commands.Project
                   if (IncludeSource)
                   {
                      Location location = await GISBloxClient.Projection.ToRDSComplete(c);
-                     OutputToConsole($"Lat: { location.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) } Lon: { location.Lon.ToString(System.Globalization.CultureInfo.InvariantCulture) } X: { location.X } Y: { location.Y }", ConsoleColor.Green);
+                     OutputToConsole(PositionParser.LocationToString(location, ";", true, LatLonFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat, CultureInfo.CurrentCulture), ConsoleColor.Green);
                   }
                   else
                   {
                      RDPoint rdPoint = await GISBloxClient.Projection.ToRDS(c);
-                     OutputToConsole($"X: { rdPoint.X } Y: { rdPoint.Y }", ConsoleColor.Green);
+                     OutputToConsole(PositionParser.RDPointToString(rdPoint, ";", LatLonFormat ? RDPointOrderEnum.XY : RDPointOrderEnum.YX, CultureInfo.CurrentCulture), ConsoleColor.Green);
                   }
                   return 0;
                }
@@ -77,13 +82,13 @@ namespace GISBlox.Services.CLI.Commands.Project
                   OutputToConsole("Writing output...");
                   if (IncludeSource)
                   {
-                     List<Location> locations = await GISBloxClient.Projection.ToRDSComplete(coordinates);
-                     await IO.SaveToCSVFile(OutputFile, Separator, locations);                     
+                     List<Location> locations = await GISBloxClient.Projection.ToRDSComplete(coordinates);                     
+                     await IO.SaveToCSVFile(OutputFile, ";", locations, true, LatLonFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat, CultureInfo.CurrentCulture);
                   }
                   else
                   {
                      List<RDPoint> rdPoints = await GISBloxClient.Projection.ToRDS(coordinates);
-                     await IO.SaveToCSVFile(OutputFile, Separator, rdPoints);
+                     await IO.SaveToCSVFile(OutputFile, ";", rdPoints, LatLonFormat ? RDPointOrderEnum.XY : RDPointOrderEnum.YX, CultureInfo.CurrentCulture);
                   }
                   OutputToConsole($"Output saved to file '{ OutputFile }'", ConsoleColor.Green);
                   return 0;

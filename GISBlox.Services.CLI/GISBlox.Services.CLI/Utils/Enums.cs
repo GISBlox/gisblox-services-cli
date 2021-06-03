@@ -1,4 +1,8 @@
-﻿namespace GISBlox.Services.CLI.Utils
+﻿// ------------------------------------------------------------
+// Copyright (c) Bartels Online.  All rights reserved.
+// ------------------------------------------------------------
+
+namespace GISBlox.Services.CLI.Utils
 {
    internal enum CoordinateOrderEnum { LatLon, LonLat, Invariant };
 

@@ -1,4 +1,8 @@
-﻿using System;
+﻿// ------------------------------------------------------------
+// Copyright (c) Bartels Online.  All rights reserved.
+// ------------------------------------------------------------
+
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;

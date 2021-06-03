@@ -1,4 +1,8 @@
-﻿using GISBlox.Services.CLI.Utils;
+﻿// ------------------------------------------------------------
+// Copyright (c) Bartels Online.  All rights reserved.
+// ------------------------------------------------------------
+
+using GISBlox.Services.CLI.Utils;
 using GISBlox.Services.SDK;
 using McMaster.Extensions.CommandLineUtils;
 using System;

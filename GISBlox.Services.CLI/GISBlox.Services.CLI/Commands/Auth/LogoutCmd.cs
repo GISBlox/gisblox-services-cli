@@ -1,4 +1,8 @@
-﻿using McMaster.Extensions.CommandLineUtils;
+﻿// ------------------------------------------------------------
+// Copyright (c) Bartels Online.  All rights reserved.
+// ------------------------------------------------------------
+
+using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Threading.Tasks;
 

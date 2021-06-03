@@ -1,4 +1,8 @@
-﻿using GISBlox.Services.CLI.Commands.Auth;
+﻿// ------------------------------------------------------------
+// Copyright (c) Bartels Online.  All rights reserved.
+// ------------------------------------------------------------
+
+using GISBlox.Services.CLI.Commands.Auth;
 using GISBlox.Services.CLI.Commands.Convert;
 using GISBlox.Services.CLI.Commands.Project;
 using McMaster.Extensions.CommandLineUtils;

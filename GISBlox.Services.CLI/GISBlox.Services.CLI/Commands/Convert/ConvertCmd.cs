@@ -1,4 +1,8 @@
-﻿using GISBlox.Services.SDK.Models;
+﻿// ------------------------------------------------------------
+// Copyright (c) Bartels Online.  All rights reserved.
+// ------------------------------------------------------------
+
+using GISBlox.Services.SDK.Models;
 using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Threading.Tasks;

@@ -1,8 +1,13 @@
-﻿using GISBlox.Services.CLI.Utils;
+﻿// ------------------------------------------------------------
+// Copyright (c) Bartels Online.  All rights reserved.
+// ------------------------------------------------------------
+
+using GISBlox.Services.CLI.Utils;
 using GISBlox.Services.SDK.Models;
 using McMaster.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace GISBlox.Services.CLI.Commands.Project
@@ -61,12 +66,12 @@ namespace GISBlox.Services.CLI.Commands.Project
                   if (IncludeSource)
                   {
                      Location location = await GISBloxClient.Projection.ToWGS84Complete(p, Decimals > 0 ? Decimals : -1); 
-                     OutputToConsole($"X: { location.X } Y: { location.Y } Lat: { location.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) } Lon: { location.Lon.ToString(System.Globalization.CultureInfo.InvariantCulture) }", ConsoleColor.Green);
+                     OutputToConsole(PositionParser.LocationToString(location, ";", false, XYFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat, CultureInfo.CurrentCulture), ConsoleColor.Green);
                   }
                   else
                   {
-                     Coordinate coordinate = await GISBloxClient.Projection.ToWGS84(p, Decimals > 0 ? Decimals : -1);                     
-                     OutputToConsole($"Lat: { coordinate.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) } Lon: { coordinate.Lon.ToString(System.Globalization.CultureInfo.InvariantCulture) }", ConsoleColor.Green);
+                     Coordinate coordinate = await GISBloxClient.Projection.ToWGS84(p, Decimals > 0 ? Decimals : -1);   
+                     OutputToConsole(PositionParser.CoordinateToString(coordinate, ";", XYFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat, CultureInfo.CurrentCulture), ConsoleColor.Green);
                   }
                   return 0;
                }
@@ -81,12 +86,12 @@ namespace GISBlox.Services.CLI.Commands.Project
                   if (IncludeSource)
                   {
                      List<Location> locations = await GISBloxClient.Projection.ToWGS84Complete(rdPoints, Decimals > 0 ? Decimals : -1);
-                     await IO.SaveToCSVFile(OutputFile, Separator, locations);
+                     await IO.SaveToCSVFile(OutputFile, ";", locations, false, XYFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat, CultureInfo.CurrentCulture);
                   }
                   else
                   {
                      List<Coordinate> coordinates = await GISBloxClient.Projection.ToWGS84(rdPoints, Decimals > 0 ? Decimals : -1);
-                     await IO.SaveToCSVFile(OutputFile, Separator, rdPoints);
+                     await IO.SaveToCSVFile(OutputFile, ";", coordinates, XYFormat ? CoordinateOrderEnum.LatLon : CoordinateOrderEnum.LonLat, CultureInfo.CurrentCulture);
                   }
                   OutputToConsole($"Output saved to file '{ OutputFile }'", ConsoleColor.Green);
                   return 0;
