@@ -1,6 +1,6 @@
 # GISBlox Services CLI
 
-The GISBlox Services CLI is a standalone tool for interacting with the [GISBlox services REST API](https://services.gisblox.com/). It enables no-code access to the API from the command-line.
+The GISBlox Services CLI is a standalone tool for interacting with the [GISBlox Services REST API](https://services.gisblox.com/). It enables no-code access to the API from the command-line.
 
 ## Authentication
 
